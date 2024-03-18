@@ -22,6 +22,6 @@ A skybox is also created using the same shader as the rest of the models. A floa
 bliin-phong has been implmented in the fragment shader. Firstly normals, tangents and binomials are calculated in the vertex shader. Light directions for each light source are also calculated and stoed in an array. A float called 'isSkybox' is used in the fragment shader to differenciate between skybox textures and other model textures. Skybox textures do not pass through binn-phong wheras all other items do. All items that cass through the shader have gamma correction applied before they are returned. Toon shading has also been applied to the shader with three levels.
 
 ### scene
-The scene is of a dragon attacking a tower at dusk. It contains a tower model, a dragon model, tiled cobblstone ground and tiled rocks bordering the edge of the scene. A soft red glow shines from behind the tower to indicate the burning village that the dragon has just laid waste to. A second light pans across the scene to indicate dusk turning into night.
+The scene is of a dragon attacking a tower at dusk. It contains a tower model, a dragon model, tiled cobblstone ground and tiled rocks bordering the edge of the scene. A soft red glow shines from behind the tower to indicate the burning village that the dragon has just laid waste to. A second light pans across the scene to indicate dusk turning into night. The skybox is of a dark stormy night to set the scene of a dragon attack on a cold night.
 
 
