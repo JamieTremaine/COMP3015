@@ -5,7 +5,7 @@
 VIsual Studio 2022
 Windows 10
 
-### How does it work?
+## How does it work?
 The inital template containing the scene, screnerunner and other helper classes was used. Initally the project follows a similar structure to those of the labs with a Light and Material struct. blinn-phong was implimented in the fragment shader with the ability to take in a diffuse texture and a normal texture. It is also able to impliment multiple lights, in this project two light sources have been used.
 
 The scene is made up entierly of custom meshes, some like the cobblestone floor have been tiled multiple times. The rock meshes surrounding the scene are placed with a random offset and rotation, each time the scene is played a slightly different arrangment will be created.
@@ -17,5 +17,11 @@ The vast majority of code is in the scenebasic_uniform files with some reusable 
 Although the shader supports normal maps not all of the models used have a normal map. A common workaround that I used was to create a tiny 4x4 image that could be used as a placeholder normal map when one was not being used.
 
 A skybox is also created using the same shader as the rest of the models. A float flag is used when the active nexture is the skybox texture and different shading approach is taken. The flag is then set to 0 when the skybox has finished rendering.
+
+### shaders
+bliin-phong has been implmented in the fragment shader. Firstly normals, tangents and binomials are calculated in the vertex shader. Light directions for each light source are also calculated and stoed in an array. A float called 'isSkybox' is used in the fragment shader to differenciate between skybox textures and other model textures. Skybox textures do not pass through binn-phong wheras all other items do. All items that cass through the shader have gamma correction applied before they are returned. Toon shading has also been applied to the shader with three levels.
+
+### scene
+The scene is of a dragon attacking a tower at dusk. It contains a tower model, a dragon model, tiled cobblstone ground and tiled rocks bordering the edge of the scene. A soft red glow shines from behind the tower to indicate the burning village that the dragon has just laid waste to. A second light pans across the scene to indicate dusk turning into night.
 
 
