@@ -14,4 +14,8 @@ Both keyboard and mouse controlshave been implemented using OpenGL callbacks. Th
 
 The vast majority of code is in the scenebasic_uniform files with some reusable components (camera) in their own files. A scene manages their own keyboard and mouse inputs, changes to scenerunner only catch the inputs and then pass them directly to the scene to manage. This allows the scene to be in control of its inputs, allowing for different keybindings between different scenes (for CW2). This is the same with the camera which alters and returns the view, it can be used in another scene without any changes.
 
-Although the shader supports normal maps n ot all of the models used have a normal map. A common workaround that I used was to create a tiny 4x4 image that could be used as a placeholder normal map when one was not being used.
+Although the shader supports normal maps not all of the models used have a normal map. A common workaround that I used was to create a tiny 4x4 image that could be used as a placeholder normal map when one was not being used.
+
+A skybox is also created using the same shader as the rest of the models. A float flag is used when the active nexture is the skybox texture and different shading approach is taken. The flag is then set to 0 when the skybox has finished rendering.
+
+
