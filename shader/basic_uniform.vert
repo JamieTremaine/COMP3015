@@ -11,13 +11,11 @@ out vec3 LightDir[2];
 out vec3 ViewDir;
 out vec3 Normal;
 out vec2 TexCoord;
-out float isSkybox;
 
 uniform mat4 ModelViewMatrix;
 uniform mat3 NormalMatrix;
 uniform mat3 ProjectionMatrix;
 uniform mat4 MVP;
-uniform float renderSkyBox;
 
 uniform struct LightInfo {
     vec4 Position;
@@ -34,7 +32,6 @@ uniform struct MaterialInfo {
 
 void main()
 {
-     isSkybox = renderSkyBox;
      Vec = VertexPosition;
      TexCoord = VertexTexCoord;
      Position = (ModelViewMatrix * vec4(VertexPosition, 1.0)).xyz;

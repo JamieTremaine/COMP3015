@@ -10,12 +10,8 @@ in vec3 LightDir[2];
 in vec3 ViewDir;
 
 layout (binding = 0) uniform sampler2D Tex1;
-layout (binding = 1) uniform samplerCube SkyboxTex;
 layout (binding = 2) uniform sampler2D NormalTex;
 layout (location = 0) out vec4 FragColor;
-
-const int levels = 5;
-const float scaleFactor = 1.0 / levels;
 
 uniform struct LightInfo {
     vec4 Position;
@@ -30,19 +26,13 @@ uniform struct MaterialInfo {
     float Shininess;
 }Material;
 
-uniform struct FogInfo {
-    float MaxDist;
-    float MinDist;
-    vec3 Colour;
-} Fog;
-
 vec3 blinnPhong(int lightIndex, vec3 n) {
      vec3 texColour = texture(Tex1, TexCoord).rgb;
      vec3 ambient = Light[lightIndex].La * texColour;
 
      vec3 s = normalize(LightDir[lightIndex]);
      float sDotN = max(dot(s,n), 0.0);
-     vec3 diffuse = texColour * floor(sDotN * levels) * scaleFactor;
+     vec3 diffuse = texColour * sDotN;
      vec3 spec = vec3(0.0);
 
      if(sDotN > 0.0) {
@@ -56,19 +46,12 @@ vec3 blinnPhong(int lightIndex, vec3 n) {
 
 void main() {
      vec3 texColour;
-
-    if(isSkybox > 0.5) {
-         texColour = texture(SkyboxTex, normalize(-Vec)).rgb;
-    } else {
         for(int i=0; i<2; i++) {  
-
-        vec3 norm = texture(NormalTex, TexCoord).xyz;
-        norm.xy = 2.0 * norm.xy - 1.0;
-        texColour += blinnPhong(i, normalize(norm));
+            vec3 norm = texture(NormalTex, TexCoord).xyz;
+            norm.xy = 2.0 * norm.xy - 1.0;
+            texColour += blinnPhong(i, normalize(norm));
         }
         
-    }    
-    
      texColour = pow(texColour, vec3(1.0/2.2));
      FragColor = vec4(texColour, 1.0);
 }

@@ -69,12 +69,33 @@
     <ClCompile Include="camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="helper\grid.cpp">
+      <Filter>helper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\basic_uniform.frag">
       <Filter>shaders</Filter>
     </None>
     <None Include="shader\basic_uniform.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\skybox.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\skybox.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\particle.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\particle.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\fire.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader\fire.frag">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>
@@ -138,6 +159,15 @@
     </ClInclude>
     <ClInclude Include="camera.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="helper\grid.h">
+      <Filter>helper</Filter>
+    </ClInclude>
+    <ClInclude Include="helper\particleutils.h">
+      <Filter>helper</Filter>
+    </ClInclude>
+    <ClInclude Include="helper\random.h">
+      <Filter>helper</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
