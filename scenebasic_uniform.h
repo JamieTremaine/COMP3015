@@ -17,6 +17,7 @@
 #include "helper/random.h"
 #include "helper/grid.h"
 #include "helper/particleutils.h"
+#include "helper/noisetex.h"
 #include "camera.h"
 
 class SceneBasic_Uniform : public Scene
@@ -32,7 +33,8 @@ private:
     std::unique_ptr<ObjMesh> floor;
     std::unique_ptr<ObjMesh> castle;
     std::unique_ptr<ObjMesh> rock;
-    GLSLProgram prog, skyboxShader, particleProg, fireProg;
+    std::unique_ptr<ObjMesh> tree;
+    GLSLProgram prog, skyboxShader, particleProg, fireProg, spriteProg;
     std::vector<GLuint> textures;
     GLuint skyboxTex;
     float rockOffset[15];
@@ -44,6 +46,9 @@ private:
     GLuint posBufParticle[2], velBufParticle[2], ageParticle[2], drawBuf, feedbackParticle[2], particleArray[2];
     GLuint posBufFire[2], velBufFire[2], ageParticleFire[2], feedbackParticleFire[2], particleArrayFire[2];
     int nParticles, nParticlesFire;
+    int numSprites;
+    float* locations;
+    GLuint sprites;
 
 
     void setMatrices(GLSLProgram &);

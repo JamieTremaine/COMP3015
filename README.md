@@ -27,12 +27,26 @@ The scene is of a dragon attacking a tower at dusk. It contains a tower model, a
 ### Usage
 All models and textures come packed within the project. No external dependancies are required (apart from glfw). It is assumed that any OpenGL dependancies, GLFW, GLAD etc are in the user/public folder as required.
 
+## CW2
+
+### Vertex Animations
+A particle fountain and a fire particle effect have been crated for the scene. Both are present in different shaders named particle and fire respectively. Both make use of their own buffers and can function independantly of one another. A shared function called initBuffers has been created where bufferes are passed as input parameters, vertex arrays are then created inside this function for the buffers that have been supplied. This function is called when the scene is initialized for both the particle fountain and fire particles. Both shaders implement transform feedback, once again a shared function has been created for this purpose that takes buffers as input parameters.
+
+### Point sprites
+Point sprites have been implemented for this scene. They have been implemented in their own shaders named 'point'. The number of sprites can be set in the custructor and the size of each sprite by setting a uniform value.
+
+### Disintegration
+Disintigration has been added to the scene, unlike other features disintigration has been implemented on top of the scenebasic_uniform shader created in CW1. Disintigration can optionally be toggled on or off in this shader through a flag uniform value 'Noise'. This allows any previously created mesh using this shader to optionally implement disintegration. high and low threshhold uniform values can then be set when the noise flag is set to provide discarding between a range of values.         
+
+
 ### Model accreditations
 
  - https://free3d.com/3d-model/low-poly-rock-for-games-9753.html
  - https://www.turbosquid.com/3d-models/game-ready-house-1431718
  - https://free3d.com/3d-model/cobblestones-3-86328.html
  - https://free3d.com/3d-model/dragon-18476.html
+ - https://www.turbosquid.com/3d-models/photogrammetry-agisoft-model-1263969
+
 
 
 

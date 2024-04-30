@@ -10,8 +10,13 @@ in vec3 LightDir[2];
 in vec3 ViewDir;
 
 layout (binding = 0) uniform sampler2D Tex1;
+layout (binding = 1) uniform sampler2D NoiseTex;
 layout (binding = 2) uniform sampler2D NormalTex;
 layout (location = 0) out vec4 FragColor;
+
+uniform float Noise;
+uniform float LowThreshold;
+uniform float HighThreshold;
 
 uniform struct LightInfo {
     vec4 Position;
@@ -45,6 +50,14 @@ vec3 blinnPhong(int lightIndex, vec3 n) {
 }
 
 void main() {
+
+    if(Noise > 0.5) {
+        vec4 noise = texture(NoiseTex, TexCoord);
+        if(noise.a < LowThreshold) discard;
+        if(noise.a > HighThreshold) discard;
+    }
+
+
      vec3 texColour;
         for(int i=0; i<2; i++) {  
             vec3 norm = texture(NormalTex, TexCoord).xyz;

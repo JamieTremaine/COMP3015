@@ -27,12 +27,13 @@ using glm::mat4;
 
 SceneBasic_Uniform::SceneBasic_Uniform() : 
     time(0.0f), angle(90.0f), emitterAngle(0.0f), drawBuf(1), 
-    deltaT(0.0f), rotSpeed(glm::pi<float>()/8.0f), camera(), sky(100.0f), nParticles(4000), nParticlesFire(4000){
+    deltaT(0.0f), rotSpeed(glm::pi<float>()/8.0f), camera(), sky(100.0f), nParticles(4000), nParticlesFire(4000), numSprites(50){
 
     castle = ObjMesh::load("media/castle.obj", false, true);
     dragon = ObjMesh::load("media/dragon.obj", false, true);
     floor = ObjMesh::load("media/cobble.obj", false, true);
     rock = ObjMesh::load("media/rock.obj", false, true);
+    tree = ObjMesh::load("media/trunk.obj", false, true);
 }
 
 void SceneBasic_Uniform::initScene()
@@ -53,6 +54,9 @@ void SceneBasic_Uniform::initScene()
     textures.push_back(Texture::loadTexture("media/texture/fire.png"));
     textures.push_back(ParticleUtils::createRandomTex1D(nParticles * 3));
     textures.push_back(ParticleUtils::createRandomTex1D(nParticlesFire * 3));
+    textures.push_back(Texture::loadTexture("media/texture/pixie.png"));
+    textures.push_back(Texture::loadTexture("media/texture/trunk.jpg"));
+    textures.push_back(NoiseTex::generate2DTex(10.0f));
 
     const float particleLifetime = 2.0f;
     initBuffers(posBufParticle, velBufParticle, ageParticle, feedbackParticle, particleArray, nParticles, 2.5f);
@@ -98,6 +102,37 @@ void SceneBasic_Uniform::initScene()
          rockOffset[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (-0.1f - 0.1f));
          rockRotation[i] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX / 360.0f);
     }
+
+    locations = new float[numSprites * 3];
+    srand((unsigned int)std::time(0));
+
+    for (int i = 0; i < numSprites; i++) {
+        vec3 p(
+            ((float)rand() / RAND_MAX * 2.0f) - 1.0f,
+            ((float)rand() / RAND_MAX * 2.0f) - 1.0f,
+            ((float)rand() / RAND_MAX * 2.0f) - 1.0f);
+        locations[i * 3] = p.x;
+        locations[i * 3 + 1] = p.y;
+        locations[i * 3 + 2] = p.z;
+    }
+
+    GLuint handle;
+    glGenBuffers(1, &handle);
+    glBindBuffer(GL_ARRAY_BUFFER, handle);
+    glBufferData(GL_ARRAY_BUFFER, numSprites * 3 * sizeof(float), locations, GL_STATIC_DRAW);
+
+    delete[] locations;
+    glGenVertexArrays(1, &sprites);
+    glBindVertexArray(sprites);
+    glBindBuffer(GL_ARRAY_BUFFER, handle);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, ((GLubyte*)NULL + (0)));
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
+
+    spriteProg.use();
+    spriteProg.setUniform("Size2", 0.15f);
+
+
 }
 
 void SceneBasic_Uniform::compile()
@@ -129,6 +164,11 @@ void SceneBasic_Uniform::compile()
 
         fireProg.link();
         fireProg.use();
+
+        spriteProg.compileShader("shader/point.vert");
+        spriteProg.compileShader("shader/point.frag");
+        spriteProg.compileShader("shader/point.gs");
+        spriteProg.link();
     }
     catch (GLSLProgramException& e) {
         cerr << e.what() << endl;
@@ -175,6 +215,7 @@ void SceneBasic_Uniform::render()
     prog.use();
     prog.setUniform("Light[0].Position", view * glm::vec4(10.0f * cos(angle), 1.0f, 10.0f * sin(angle), 1.0f));
     prog.setUniform("Light[1].Position", view * glm::vec4(14.0f, 2.0f, 20.0f, 1.0f));
+    prog.setUniform("Noise", 0.0f);
 
     skyboxShader.use();
 
@@ -243,6 +284,27 @@ void SceneBasic_Uniform::render()
     model = glm::rotate(model, 180.0f, vec3(0.0f, 1.0f, 0.0f));
     setMatrices(prog);
     castle->render();
+
+
+    prog.setUniform("Noise", 1.0f);
+    prog.setUniform("LowThreshold", 0.45f);
+    prog.setUniform("HighThreshold", 0.65f);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textures[10]);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, textures[11]);
+
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, textures[4]);
+
+    model = mat4(1.0f);
+    model = glm::translate(model, vec3(6.0f, 0.0f, 22.0f));
+    model = glm::rotate(model, 80.0f, vec3(0.0f, 0.0f, 1.0f));
+    model = glm::rotate(model, 0.2f, vec3(1.0f, 0.0f, 1.0f));
+    setMatrices(prog);
+    tree->render();
+    prog.setUniform("Noise", 0.0f);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textures[5]);
@@ -319,6 +381,20 @@ void SceneBasic_Uniform::render()
     glDepthMask(GL_TRUE);
 
     drawBuf = 1 - drawBuf;
+
+    spriteProg.use();
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textures[9]);
+
+    model = mat4(1.0f);
+    model = glm::translate(model, vec3(8.5f, 9.0f, 15.0f));
+
+    setMatrices(spriteProg);
+
+    glBindVertexArray(sprites);
+    glDrawArrays(GL_POINTS, 0, numSprites);
+    glFinish();
 }
 
 void SceneBasic_Uniform::resize(int w, int h)
